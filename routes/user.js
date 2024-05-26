@@ -1,5 +1,5 @@
 const express = require('express') ;
-const {User} = require('../db')
+const {User,Course} = require('../db')
 const {userAuth,generateJwt,userSecret} = require('../middleware/auth');
 
 
