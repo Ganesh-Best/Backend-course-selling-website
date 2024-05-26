@@ -15,8 +15,8 @@ require('dotenv').config();
 
 const s3 = new S3Client({
     credentials:{
-        accessKeyId: 'AKIAXYKJUUI2VXEERSNU',  // from AWS IAM
-        secretAccessKey: '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'      
+        accessKeyId: process.env.accessKeyId,  // from AWS IAM
+        secretAccessKey: process.env.secretAccessKey      
     },
     region:'ap-south-1'
 })
