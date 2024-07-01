@@ -1,6 +1,8 @@
 const express = require('express') ;
 const {User,Course} = require('../db')
 const {userAuth,generateJwt,userSecret} = require('../middleware/auth');
+const {getUrl} = require('../middleware/s3');
+const { mongoose } = require('mongoose');
 
 
 const router = express.Router()
@@ -65,6 +67,30 @@ router.get('/course',userAuth,async(req,res)=>{
       res.json({courses:[]})
 
 })
+
+router.get('/coursedetail/:id',async(req,res)=>{
+    
+    const  courseId = req.params.id ;         
+       console.log(courseId);
+      if(mongoose.Types.ObjectId.isValid(courseId)){
+     
+        let isFound   =  await Course.findOne({_id:{$eq:courseId},published:true})
+        
+        if(isFound != null) {
+         let {title,description,syallabus,introVideo,image} = isFound ;
+
+           introVideo.url   =   await getUrl(introVideo.key)
+            
+           console.log({title,description,syallabus,introVideo,image})
+           res.json({title,description,syallabus,introVideo,image})
+       
+        }else
+          res.status(404).json("Course not found with Id :")
+      }else
+      res.status(411).json({message:"Id is required :"})
+
+})
+
 
 
 router.get('/myCourses', userAuth, async(req,res)=>{

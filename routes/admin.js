@@ -100,21 +100,28 @@ router.post('/signup',async(req,res)=>{
  
            const newCourse = {
              ...req.body,
-             file1:{
+             introVideo:{
                 key: req.files[0].key,
                 name:req.files[0].originalname,
                 type:req.files[0].mimetype,
                 size:req.files[0].size,
              },
-             file2:{
+             file1:{
                 key: req.files[1].key,
                 name:req.files[1].originalname,
                 type:req.files[1].mimetype,
                 size:req.files[1].size,
              },
-             published:false
+             file2:{
+               key: req.files[2].key,
+               name:req.files[2].originalname,
+               type:req.files[2].mimetype,
+               size:req.files[2].size,
+            },
 
            } 
+           console.log('Course Details :')
+           console.log(newCourse);
          let isCourse  =  await Course.create(newCourse)
          
           if(isCourse != null){
@@ -123,6 +130,7 @@ router.post('/signup',async(req,res)=>{
                await isFound.save();
             return res.status(201).json({message:"Course has  been created Successfully!",isCourse});
           }
+
              
           
        
@@ -190,6 +198,7 @@ router.post('/signup',async(req,res)=>{
    
              const newCourse = {
                ...req.body,
+
                file1:{
                   key: req.files[0].key,
                   name:req.files[0].originalname,

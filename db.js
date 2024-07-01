@@ -20,6 +20,8 @@ const courseSchema = new mongoose.Schema({
     "description": { type : String , required : true },
     "price": { type : Number , required : true },
     "image": { type : String , required : true },
+    "syallabus": { type : String , required : true },
+    "introVideo": {type:Object ,required:true },
     "file1": {type:Object ,required:true },
     "file2": {type:Object ,required:true },
     "published":{ type: Boolean ,required:true}
