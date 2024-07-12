@@ -30,6 +30,7 @@ app.use(cors({
 
 //app.use(cors())
 
+app.use(express.urlencoded({extended:true}))
 app.use((req,res,next)=>{
    res.header('Content-Type','multipart/form-data;charset=UTF-8');
    res.header('Access-Control-Allow-Credentials',true);

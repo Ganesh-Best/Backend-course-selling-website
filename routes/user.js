@@ -3,6 +3,9 @@ const {User,Course} = require('../db')
 const {userAuth,generateJwt,userSecret} = require('../middleware/auth');
 const {getUrl} = require('../middleware/s3');
 const { mongoose } = require('mongoose');
+const razorpay = require('razorpay');
+const {createOrder,paymentSuccess,paymentInfo} = require('../middleware/payment')
+
 
 
 const router = express.Router()
@@ -77,12 +80,12 @@ router.get('/coursedetail/:id',async(req,res)=>{
         let isFound   =  await Course.findOne({_id:{$eq:courseId},published:true})
         
         if(isFound != null) {
-         let {title,description,syallabus,introVideo,image} = isFound ;
+         let {title,description,syallabus,introVideo,image,price,_id} = isFound ;
 
            introVideo.url   =   await getUrl(introVideo.key)
             
            console.log({title,description,syallabus,introVideo,image})
-           res.json({title,description,syallabus,introVideo,image})
+           res.json({title,description,syallabus,introVideo,image,price,id:_id})
        
         }else
           res.status(404).json("Course not found with Id :")
@@ -91,7 +94,12 @@ router.get('/coursedetail/:id',async(req,res)=>{
 
 })
 
+router.post('/checkout',userAuth,createOrder);
 
+router.post('/paymentverify',paymentSuccess)
+
+
+router.get('/paymentinfo',userAuth,paymentInfo)
 
 router.get('/myCourses', userAuth, async(req,res)=>{
  
@@ -136,6 +144,8 @@ router.post('/course/:id',userAuth,async(req,res)=>{
       res.status(404).json({message:"Invalid Course ID:"})
 
 })
+
+
 
 
 module.exports = router
