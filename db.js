@@ -37,6 +37,7 @@ const paymentSchema = new mongoose.Schema({
     "description":{type:String,required:true},
     "price":{type:Number,required:true},
     "mobile":{type:Number,required:true},
+    "courseId":{type:String,required:true}
        
 },{timestamps:true})
 

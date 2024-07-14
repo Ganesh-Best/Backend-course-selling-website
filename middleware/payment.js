@@ -1,5 +1,6 @@
 const razorpay = require('razorpay');
 const crypto = require('crypto');
+const mongoose = require('mongoose');
 
 const {User,Payment, Course} = require('../db')
 
@@ -36,6 +37,7 @@ const paymentSuccess = async(req,res)=>{
 
     const email = req.query.email;
      const  id   = req.query.id;
+
      console.log('Id received from callback url',id);  
 
     const { razorpay_payment_id,razorpay_order_id,razorpay_signature } = req.body ;
@@ -60,14 +62,44 @@ const paymentSuccess = async(req,res)=>{
                 price,
                 payment_id:razorpay_payment_id,
                 order_id:razorpay_order_id,
-                signature:razorpay_signature
+                signature:razorpay_signature,
+                courseId:id
                })
 
                if(isCreated != null){
                    
                     console.log('User Found :',username,name,mobile,title,description,price);
-                    console.log({success:true,razorpay_order_id,razorpay_payment_id,razorpay_signature}) 
-                    res.redirect(`http://localhost:3000/paymentsuccess?reference=${razorpay_payment_id}`);
+                    console.log({success:true,razorpay_order_id,razorpay_payment_id,razorpay_signature})
+                    
+
+                    if(mongoose.Types.ObjectId.isValid(id)){
+            
+                        let isFound = await Course.findById(id)
+           
+                        if(isFound !== null){
+           
+                               let user  = await User.findOne({username:{$eq:email}}) 
+                              
+                               if(user !== null){
+                               user.purchasedCourse.push(isFound)
+                                    
+                               await user.save() 
+                               }else
+                                res.status(403).json({message:"User not found :"});
+                             
+                                res.redirect(`http://localhost:3000/paymentsuccess?reference=${razorpay_payment_id}`);
+                        //    res.status(201).json({message:"Course has been purchased successfully :"})
+           
+                        }else
+                        res.status(404).json({message:"Course does not found :"})
+           
+           
+                 }
+
+
+                    
+
+                    // res.redirect(`http://localhost:3000/paymentsuccess?reference=${razorpay_payment_id}`);
                
           }else{
              console.log('redirect to payment failure page :') 
@@ -77,16 +109,55 @@ const paymentSuccess = async(req,res)=>{
        console.log({success:false})
 }
 
-const paymentInfo = async(req,res)=>{
- 
-    const  tranction_id = req.query.reference;
 
-    const {name,email,mobile,createdAt,payment_id,order_id,title,description,price}  =   await Payment.findOne({payment_id:tranction_id});
- 
+// This will receive either reference or courseId  as variable in URL 
+
+const paymentInfo = async(req,res)=>{
+    
+    let id = '';
+    let isFound = null;
+
+    let transaction_id = '' ;
+
+    console.log('req.query.reference' ,req.query.courseId)
+
+    //if receive course Id as variable 
+    if(req.query.courseId){
+        id = req.query.courseId;
+        
+        // let searchValue= course_id;
+        // let search_key = 'courseId';
+        //     // course_id   =  new mongoose.Types.ObjectId(course_id);
+       //  searchCriteria = { [search_key]: searchValue  }
+        
+
+     }else{
+        // if receive transation_id as variable
+          transaction_id = req.query.reference;
+        //searchCriteria = { 'payment_id': transaction_id }
+         
+     }
+
+     //console.log('req.query',req.query.reference,searchCriteria);
+
+    
+
+    // const {name,email,mobile,createdAt,payment_id,order_id,title,description,price}  =   await Payment.findOne({searchCriteria});
+   
+    console.log('req.query.course_id',req.query.courseId,id);
+
+    let isFound2   =   await Payment.findOne({courseId:id})
+     
+    console.log('isFound2',isFound2,{courseId:id});
+
+    (req.query.courseId)?(isFound = await Payment.findOne({courseId:id})):(isFound = await Payment.findOne({payment_id:transaction_id}))
+    
+     const {name,email,mobile,createdAt,payment_id,order_id,description,price,courseId,title} = isFound;
+    
        if(payment_id){
       
         console.log('Payment details send to client') 
-        res.json({name,email,mobile,createdAt,payment_id,order_id,title,description,price}) 
+        res.json({name,email,mobile,createdAt,payment_id,order_id,title,description,price,courseId}) 
     
        }
 

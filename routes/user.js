@@ -12,7 +12,7 @@ const router = express.Router()
 
 router.post('/signup',async(req,res)=>{
  
-    const {username ,password} = req.headers;
+    const {username ,password ,name, mobile} = req.headers;
 
     if(username && password){
                            
@@ -24,7 +24,7 @@ router.post('/signup',async(req,res)=>{
 
           }else{
               
-          let isCreate = await User.create({role:"user",username,password,purchasedCourse:[]})
+          let isCreate = await User.create({role:"user",name,mobile,username,password,purchasedCourse:[]})
            
             console.log('userCreated:',isCreate)        
             res.status(201).json({message:"User Sign up successfully , Kindly login :"})
@@ -60,7 +60,8 @@ router.post('/signin', async(req,res)=>{
 
 })
 
-router.get('/course',userAuth,async(req,res)=>{
+// remove ,userAuth as  user can access course without login :
+router.get('/course',async(req,res)=>{
    
     let courses     =  await Course.find({published:true})
       
@@ -93,7 +94,7 @@ router.get('/coursedetail/:id',async(req,res)=>{
       res.status(411).json({message:"Id is required :"})
 
 })
-
+//,userAuth
 router.post('/checkout',userAuth,createOrder);
 
 router.post('/paymentverify',paymentSuccess)
@@ -102,9 +103,13 @@ router.post('/paymentverify',paymentSuccess)
 router.get('/paymentinfo',userAuth,paymentInfo)
 
 router.get('/myCourses', userAuth, async(req,res)=>{
- 
-    let isUser  = await User.findOne({username:{$eq:req.user.username}}).populate('purchasedCourse')
 
+    console.log('my Courses route hitting :' ,req.user.username)
+    
+    
+    let isUser  = await User.findOne({username:{$eq:req.user.username}}).populate('purchasedCourse')
+     
+    console.log(isUser)
     if(isUser !== null){
 
         res.json({"courses":isUser.purchasedCourse ||[]})
@@ -140,7 +145,8 @@ router.post('/course/:id',userAuth,async(req,res)=>{
              res.status(404).json({message:"Course does not found :"})
 
 
-      }else
+      }
+      else
       res.status(404).json({message:"Invalid Course ID:"})
 
 })

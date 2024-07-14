@@ -31,7 +31,7 @@ const userAuth = (req,res,next)=>{
           
           let cipher =  token.split(' ')[1]
 
-          jwt.verify(cipher,adminSecret,(error,payload)=>{
+          jwt.verify(cipher,userSecret,(error,payload)=>{
             if(error)
             return res.sendStatus(403);
 
@@ -47,11 +47,15 @@ const userAuth = (req,res,next)=>{
 const generateJwt = (payload,type)=>{
    let token = "user" 
 
-   if(type === "admin")
-      token = jwt.sign(payload,adminSecret,{expiresIn:'3h'})
-   else
-      token = jwt.sign(payload,userSecret,{expiresIn:'3h'})
-
+   if(type === "admin"){
+      
+      //token = jwt.sign(payload,adminSecret,{expiresIn:'3h'})
+      token = jwt.sign(payload,adminSecret)
+   
+      }else{
+      //token = jwt.sign(payload,userSecret,{expiresIn:'3h'})
+      token = jwt.sign(payload,userSecret)
+      }
   return 'Bearer ' + token ; 
 
 }
