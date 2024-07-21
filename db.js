@@ -24,7 +24,8 @@ const courseSchema = new mongoose.Schema({
     "introVideo": {type:Object ,required:true },
     "file1": {type:Object ,required:true },
     "file2": {type:Object ,required:true },
-    "published":{ type: Boolean ,required:true}
+    "published":{ type: Boolean ,required:true},
+    "featured":{ type: Boolean ,required:true}
 })
 
 const paymentSchema = new mongoose.Schema({

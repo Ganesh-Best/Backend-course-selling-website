@@ -23,10 +23,13 @@ require('dotenv').config();
  // app.use(bodyParser.urlencoded( { extended: false } ));   // middle
  //app.use(bodyParser.json())
 
+
 app.use(cors({
    credentials:true,
    origin:"http://localhost:3000"
 }))
+
+app.use(express.static('build'))
 
 //app.use(cors())
 

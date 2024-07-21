@@ -38,7 +38,7 @@ const paymentSuccess = async(req,res)=>{
     const email = req.query.email;
      const  id   = req.query.id;
 
-     console.log('Id received from callback url',id);  
+     console.log('Id received from callback url',id,email);  
 
     const { razorpay_payment_id,razorpay_order_id,razorpay_signature } = req.body ;
     
@@ -52,6 +52,10 @@ const paymentSuccess = async(req,res)=>{
      if(signMatch){
          const {title,description,price} = await Course.findOne({_id:id});
          const {username,name,mobile} =  await User.findOne({'username':{$eq:email}})
+
+         const isFound2 = await await User.findOne({'username':{$eq:email}});
+
+         console.log('isFound2',isFound2)
                                    
         const isCreated   =  await Payment.create({
                 name,

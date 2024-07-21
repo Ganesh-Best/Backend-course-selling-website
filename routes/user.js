@@ -72,6 +72,19 @@ router.get('/course',async(req,res)=>{
 
 })
 
+//Give  all features courses :
+
+router.get('/courses/feature',async(req,res)=>{
+   
+  let courses     =  await Course.find({published:true,featured:true})
+    
+    if(courses !==null)
+    res.json({courses:courses })
+    else
+    res.json({courses:[]})
+
+})
+
 router.get('/coursedetail/:id',async(req,res)=>{
     
     const  courseId = req.params.id ;         
@@ -148,6 +161,31 @@ router.post('/course/:id',userAuth,async(req,res)=>{
       }
       else
       res.status(404).json({message:"Invalid Course ID:"})
+
+})
+
+router.get('/viewcourse/:id',userAuth,async(req,res)=>{
+  const id  =    req.params.id;
+    console.log("viewcourse route",id) 
+   if(mongoose.Types.ObjectId.isValid(id)){
+
+          let isFound  =   await Course.findOne({_id:{$eq:id}})
+               
+              if(isFound !== null){
+                  let url =  await getUrl(isFound.file1.key)
+                   isFound.file1.url = url;
+                      url     = await getUrl(isFound.file2.key)     
+                      isFound.file2.url = url ;
+                       
+                      console.log("S3 URLs",isFound);
+
+                      res.json({message:"Course found :",isFound})
+
+              }else
+               res.status(404).json({message:"Course not found with this ID :"})
+
+   }else
+   res.status(404).send("Invalid Course Id")
 
 })
 
