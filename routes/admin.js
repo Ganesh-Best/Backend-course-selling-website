@@ -293,4 +293,19 @@ router.post('/signup',async(req,res)=>{
         })
 
 
+router.get('/video',adminAuth,async(req,res)=>{
+    
+         const {key} = req.headers;
+               
+        if(key){
+                
+        const url  = await getUrl(key)  
+       return res.status(200).json({key,url,message:"video found "})
+       
+        }
+      
+        res.status(404).json({key,message:"Ops video not found :"})
+})        
+
+
         module.exports = router;

@@ -189,6 +189,25 @@ router.get('/viewcourse/:id',userAuth,async(req,res)=>{
 
 })
 
+router.get('/video',userAuth,async(req,res)=>{
+    
+   const {key} = req.headers;
+   
+ 
+
+  if(key){
+          
+  const url  = await getUrl(key)
+
+
+  
+  return res.status(200).json({key,URL:url,message:"Video found :"})
+  
+  }
+  
+  res.status(404).json({key,message:"Ops Video not Found :"})
+
+})
 
 
 
