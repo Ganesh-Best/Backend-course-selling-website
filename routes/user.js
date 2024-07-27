@@ -209,6 +209,43 @@ router.get('/video',userAuth,async(req,res)=>{
 
 })
 
+router.get('/userinfo',userAuth,async(req,res)=>{
+   
+     try {
+      const email = req.user.username;
+                     
+     const {name,username,password,mobile}  =  await User.findOne({username:email})
+                          
+     res.status(200).json({userInfo:{name,email:username,password,mobile}})
+      
+     } catch (error) {
+      
+      res.status(500).json({message:"Internal Server Error Occur :"})
+     }        
+      
+})
+
+router.post('/passchange',userAuth,async(req,res)=>{
+
+      const {password} = req.headers;
+      const {username} = req.user ;
+    console.log("email ,",username ,password)
+    console.log("headers ",req.headers ,req.user);
+      if(password){
+
+        const isFound   =  await  User.findOne({username})
+
+            if(isFound){
+                 isFound.password = password;
+                 isFound.save();
+                 console.log('new is Found',isFound)
+                 res.status(200).json({message:"Password  has been changed successfully :"})
+            }else
+            res.status(400).json({message:"unable to change password"})
+
+      }
+
+})
 
 
 module.exports = router
