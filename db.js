@@ -48,8 +48,11 @@ const Course = new mongoose.model('Course',courseSchema);
 
 const Payment = new mongoose.model('Payment',paymentSchema); 
 
-mongoose.connect('mongodb://0.0.0.0:27017/website')
+const DB_URL = process.env.DB_URL;
 
+// mongoose.connect('mongodb://0.0.0.0:27017/website')
+
+mongoose.connect(DB_URL)
  
 // User.create({"username":"hackgan2@gmail.com","password":"gaesn123"}).then(response=>console.log(response))
 

@@ -1,6 +1,6 @@
+ require('dotenv').config();
  const { User,Admin,Course }  =  require('./db')
  const AWS = require('aws-sdk');
-require('dotenv').config();
  const express = require('express');
  const jwt = require('jsonwebtoken'); 
  const bodyParser = require('body-parser');
@@ -23,6 +23,7 @@ require('dotenv').config();
  // app.use(bodyParser.urlencoded( { extended: false } ));   // middle
  //app.use(bodyParser.json())
 
+ console.log(process.env.DB_URL);
 
 app.use(cors({
    credentials:true,
@@ -60,12 +61,12 @@ app.use('/user',userRouter);
 
  
 
- app.get('/',async(req,res)=>{
+//  app.get('/',async(req,res)=>{
 
-       let url =  await getUrl('1713247898166')
-    res.json({message:"Welcome in Course ganesh :",url})
+//        let url =  await getUrl('1713247898166')
+//     res.json({message:"Welcome in Course ganesh :",url})
 
- })
+//  })
 
  // Admin Routes :
  
