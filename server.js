@@ -25,12 +25,14 @@
 
  console.log(process.env.DB_URL);
 
+
 // app.use(cors({
 //    credentials:true,
 //    origin:"http://localhost:3000"
 // }))
 
-app.use(cors());
+//app.use(cors());
+app.use(cors())
 
 app.use(express.static('build'))
 
