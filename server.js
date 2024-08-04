@@ -25,10 +25,7 @@
 
  console.log(process.env.DB_URL);
 
-app.use(cors({
-   credentials:true,
-   origin:"*"
-}))
+app.use(cors())
 
 app.use(express.static('build'))
 
